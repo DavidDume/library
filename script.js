@@ -46,15 +46,22 @@ modalContainer.addEventListener('click', e => {
     modalContainer.classList.remove('show');
 });
 
-function removeBook(btn, book) {
+function removeBook(btn, box) {
     btn.addEventListener('click', e => {
-        myLibrary.splice(e.target.id, 1);
-        console.log(myLibrary);
+        let removed = myLibrary.splice(box.getAttribute('data-id'), 1);
+        showAllBoxes(myLibrary);
     });
     
 }
 
-function showBoxes(b, i) {
+function showAllBoxes(arr) {
+    gridContainer.innerHTML = "";
+    myLibrary.forEach((book, i) => {
+        showBox(book, i);
+    })
+}
+
+function showBox(b, i) {
     
     const box = document.createElement('div');
     box.dataset.id = i;
@@ -81,7 +88,6 @@ function showBoxes(b, i) {
 
     removeBtn.innerHTML = 'Remove';
 
-    console.log(pTitle);
     pTitle.innerHTML = b.title;
     pAuthor.innerHTML = b.author;
     pPages.innerHTML = b.pages;
@@ -90,7 +96,7 @@ function showBoxes(b, i) {
     gridContainer.append(box);
 
     b.read(readBtn, b);
-    removeBook(removeBtn, b)
+    removeBook(removeBtn, box)
 }
 
 form.addEventListener('submit', e => {
@@ -102,5 +108,5 @@ form.addEventListener('submit', e => {
     inputs.forEach(i => i.value = '');
     modalContainer.classList.remove('show');
 
-    showBoxes(book, myLibrary.indexOf(book));
+    showBox(book, myLibrary.indexOf(book));
 });
