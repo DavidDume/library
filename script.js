@@ -20,6 +20,23 @@ function Book(title, author, pages, isRead) {
     this.isRead = isRead;
 }
 
+Book.prototype.read = function(btn, obj) {
+    btn.addEventListener('click', e => {
+        if(obj.isRead) {
+            obj.isRead = false;
+            btn.classList.remove('read')
+            btn.classList.add('notRead')
+            btn.innerHTML = 'Not Read';
+        } else {
+            obj.isRead = true;
+            btn.classList.remove('notRead');
+            btn.classList.add('read');
+            btn.innerHTML = 'Read';
+        }
+        console.log(obj.isRead);
+    });
+}
+
 openModal.addEventListener('click', () => {
     modalContainer.classList.add('show');
 });
@@ -29,9 +46,18 @@ modalContainer.addEventListener('click', e => {
     modalContainer.classList.remove('show');
 });
 
-function showBoxes(b) {
+function removeBook(btn, book) {
+    btn.addEventListener('click', e => {
+        myLibrary.splice(e.target.id, 1);
+        console.log(myLibrary);
+    });
+    
+}
+
+function showBoxes(b, i) {
     
     const box = document.createElement('div');
+    box.dataset.id = i;
     const pTitle = document.createElement('p');
     const pAuthor = document.createElement('p');
     const pPages = document.createElement('p');
@@ -45,9 +71,7 @@ function showBoxes(b) {
     readBtn.classList.add('readBtn', 'btn');
     removeBtn.classList.add('removeBtn', 'btn');
 
-
-    // doesnt work!!!
-    if(!b.isRead) {
+    if(b.isRead) {
         readBtn.classList.add('read');
         readBtn.innerHTML = 'Read';
     } else {
@@ -55,7 +79,6 @@ function showBoxes(b) {
         readBtn.innerHTML = 'Not Read';
     }
 
-    readBtn.innerHTML = 'Read';
     removeBtn.innerHTML = 'Remove';
 
     console.log(pTitle);
@@ -65,7 +88,9 @@ function showBoxes(b) {
 
     box.append(pTitle, pAuthor, pPages, readBtn, removeBtn);
     gridContainer.append(box);
-    
+
+    b.read(readBtn, b);
+    removeBook(removeBtn, b)
 }
 
 form.addEventListener('submit', e => {
@@ -77,5 +102,5 @@ form.addEventListener('submit', e => {
     inputs.forEach(i => i.value = '');
     modalContainer.classList.remove('show');
 
-    showBoxes(book);
+    showBoxes(book, myLibrary.indexOf(book));
 });
